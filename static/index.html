@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Chatroom</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #chatbox { width: 300px; height: 300px; overflow-y: auto; border: 1px solid black; margin: 20px auto; padding: 10px; }
+        input, button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Welcome to Anonymous Chatroom</h2>
+    
+    <label>Room Code:</label>
+    <input type="text" id="roomCode" placeholder="Enter Room Code"><br>
+
+    <label>Username:</label>
+    <input type="text" id="username" placeholder="Enter Username"><br>
+
+    <button onclick="joinChat()">Join Chat</button>
+
+    <div id="chatbox"></div>
+
+    <input type="text" id="message" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        let ws;
+        
+        function joinChat() {
+            let roomCode = document.getElementById("roomCode").value;
+            let username = document.getElementById("username").value;
+            
+            if (!roomCode || !username) {
+                alert("Enter Room Code and Username!");
+                return;
+            }
+
+            ws = new WebSocket(`wss://anonymous-chatroom-production.up.railway.app/ws/${roomCode}/${username}`);
+
+            ws.onmessage = (event) => {
+                let chatbox = document.getElementById("chatbox");
+                chatbox.innerHTML += `<p>${event.data}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            };
+        }
+
+        function sendMessage() {
+            let message = document.getElementById("message").value;
+            if (ws && message.trim() !== "") {
+                ws.send(message);
+                document.getElementById("message").value = "";
+            }
+        }
+    </script>
+</body>
+</html>

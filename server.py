@@ -51,4 +51,17 @@ async def active_rooms():
 @app.get("/")
 async def root():
     return {"message": "Welcome to Anonymous Chatroom! Use /create-room to start."}
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+app = FastAPI()
+
+# Serve the static folder
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Route for serving index.html
+@app.get("/")
+async def serve_homepage():
+    return FileResponse("static/index.html")
 
