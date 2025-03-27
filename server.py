@@ -48,3 +48,7 @@ async def create_room():
 @app.get("/active-rooms")
 async def active_rooms():
     return {"active_rooms": list(rooms.keys())}
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Anonymous Chatroom! Use /create-room to start."}
+
